@@ -24,6 +24,21 @@ const app = express();
 const http = require('http');
 const server = http.createServer(app);
 
+// ── BULLETPROOF MANUAL CORS INTERCEPTOR ──
+// This runs before EVERYTHING else and forcefully answers OPTIONS preflights.
+app.use((req, res, next) => {
+    const origin = req.headers.origin || '*';
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
+    next();
+});
+
 // Body parser
 app.use(express.json());
 
@@ -31,17 +46,6 @@ app.use(express.json());
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
-
-// ── CORS must be the VERY FIRST middleware ──────────────────────────
-// Handles preflight OPTIONS before helmet, routes, or anything else
-const corsOptions = {
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-    optionsSuccessStatus: 200  // Some browsers (IE11) choke on 204
-};
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // Handle ALL preflight requests
 
 // Security Middlewares (after CORS)
 app.use(helmet({
