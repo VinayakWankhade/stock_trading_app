@@ -1,4 +1,4 @@
-# QuantEdge (formerly SB Stocks) – Full Project Documentation
+# QuantEdge – Full Project Documentation
 
 This document outlines the complete lifecycle of the QuantEdge Virtual Trading Simulator, structured across the 7 core phases of software development.
 
