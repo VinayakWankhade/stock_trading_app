@@ -1,0 +1,33 @@
+# Dependencies (both client & server)
+node_modules/
+**/node_modules/
+
+# Environment variables — NEVER commit these
+.env
+**/.env
+.env.local
+.env.*.local
+
+# Build outputs
+dist/
+build/
+dist-ssr/
+
+# Logs
+*.log
+logs/
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Vite cache
+.vite/
+
+# Temp / test scripts
+test-*.js
+promote.js
+update_role.js
+/tmp/
