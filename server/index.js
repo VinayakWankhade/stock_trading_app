@@ -32,30 +32,23 @@ if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
 
-// Security Middlewares
-app.use(helmet()); // Set security headers
+// ── CORS must be the VERY FIRST middleware ──────────────────────────
+// Handles preflight OPTIONS before helmet, routes, or anything else
+const corsOptions = {
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    optionsSuccessStatus: 200  // Some browsers (IE11) choke on 204
+};
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Handle ALL preflight requests
 
-// Dynamic CORS — allows any Vercel preview/production URL + localhost
-const allowedOrigins = [
-    /^https:\/\/.*\.vercel\.app$/,   // any *.vercel.app subdomain
-    /^http:\/\/localhost:\d+$/        // any localhost port
-];
-app.use(cors({
-    origin: (origin, callback) => {
-        // Allow requests with no origin (mobile apps, Postman, curl)
-        if (!origin) return callback(null, true);
-        const isAllowed = allowedOrigins.some(pattern => pattern.test(origin));
-        callback(isAllowed ? null : new Error(`CORS blocked: ${origin}`), isAllowed);
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+// Security Middlewares (after CORS)
+app.use(helmet({
+    crossOriginResourcePolicy: false,  // Don't block cross-origin resources
+    crossOriginOpenerPolicy: false
 }));
 
-// Handle OPTIONS preflight for all routes
-app.options('*', cors());
-// app.use(mongoSanitize()); // Sanitize data (Incompatible with Express 5)
-// app.use(xss()); // Prevent XSS attacks (Incompatible with Express 5)
 
 // Mount routers
 app.use('/api/user', userRoute);
