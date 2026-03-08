@@ -13,7 +13,7 @@ export const GeneralProvider = ({ children }) => {
     const [error, setError] = useState(null);
 
     // Set default axios base URL
-    axios.defaults.baseURL = 'http://localhost:8000/api';
+    axios.defaults.baseURL = 'https://stock-trading-app-10g5.onrender.com/api';
 
     useEffect(() => {
         if (token) {
@@ -59,9 +59,13 @@ export const GeneralProvider = ({ children }) => {
         setLoading(true);
         try {
             const res = await axios.post('/user/register', formData);
-            localStorage.setItem('token', res.data.token);
-            setToken(res.data.token);
+            const newToken = res.data.token;
+            localStorage.setItem('token', newToken);
+            axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+            setToken(newToken);
             setError(null);
+            // Immediately load user so isAuthenticated + user are set → triggers redirect
+            await loadUser();
             return { success: true };
         } catch (err) {
             setError(err.response?.data?.error || 'Registration failed');
