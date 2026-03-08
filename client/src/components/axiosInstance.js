@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-    baseURL: 'https://stock-trading-app-10g5.onrender.com/api',
+    baseURL: 'http://localhost:8000/api',
 });
 
 // Add a request interceptor
