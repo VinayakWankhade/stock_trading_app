@@ -67,6 +67,15 @@ Stock_Trading_App/
 
 ---
 
+## 🎓 Instructor / Evaluation Guide
+
+To easily evaluate the administrative capabilities of the platform, an admin account has been predefined. You can log into the application using the following credentials to bypass normal registration and access the protected `/admin` control suite:
+
+- **Email:** `admin@quantedge.com`
+- **Password:** `admin_password123`
+
+---
+
 ## 🔑 Core Features
 
 ### 1. User Authentication
